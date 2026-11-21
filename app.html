@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>温可乐健身 — 全阶段科学健身私教</title>
+<meta name="description" content="根据你的身体数据、训练经验与目标，生成个性化训练计划、饮食方案与恢复建议。覆盖零基础到高级全阶段，适配居家与健身房双场景。">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- 顶部导航 -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-icon"><i class="fas fa-dumbbell"></i></div>
+      <div class="brand-text">
+        <h1>温可乐健身</h1>
+        <span>全阶段科学健身私教</span>
+      </div>
+    </div>
+    <nav class="header-nav">
+      <a href="#formView" class="nav-link">开始测评</a>
+      <a href="#features" class="nav-link" data-about-link="features">能力</a>
+      <a href="#method" class="nav-link" data-about-link="method">方法论</a>
+    </nav>
+  </div>
+</header>
+
+<!-- 主容器 -->
+<main class="container">
+
+  <!-- ===================== 表单视图 ===================== -->
+  <div id="formView">
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-orbs" aria-hidden="true">
+        <span class="orb orb-a"></span>
+        <span class="orb orb-b"></span>
+        <span class="orb orb-c"></span>
+      </div>
+      <div class="breath-orb" aria-hidden="true">
+        <span class="breath-ring"></span>
+        <span class="breath-ring"></span>
+        <span class="breath-ring"></span>
+        <span class="breath-core"><i class="fas fa-dumbbell"></i></span>
+      </div>
+      <div class="hero-badge"><i class="fas fa-robot"></i> AI 私人教练 · 循证训练体系</div>
+      <h2>像有一个懂科学的私教，<br>随身指导你的每一次训练</h2>
+      <p>输入你的身体数据，4 步生成个性化训练 + 饮食 + 恢复闭环方案。基于 Schoenfeld、ACSM、ISSN 等循证文献构建。</p>
+      <div class="hero-stats">
+        <div class="stat"><strong>6+</strong><span>训练体系</span></div>
+        <div class="stat"><strong>40+</strong><span>精选动作</span></div>
+        <div class="stat"><strong>A-D</strong><span>证据分级</span></div>
+        <div class="stat"><strong>0</strong><span>医疗建议</span></div>
+      </div>
+    </section>
+
+    <!-- 开场能力问卷（首次访问才显示，可跳过；不占 4 步表单） -->
+    <section id="abilityOnboarding" class="ab-onboarding" hidden></section>
+
+    <!-- 进度条 -->
+    <div class="progress-bar">
+      <div class="step-dot active"><span>1</span><label>身体数据</label></div>
+      <div class="step-line"></div>
+      <div class="step-dot"><span>2</span><label>训练设置</label></div>
+      <div class="step-line"></div>
+      <div class="step-dot"><span>3</span><label>生活方式</label></div>
+      <div class="step-line"></div>
+      <div class="step-dot"><span>4</span><label>生成方案</label></div>
+    </div>
+
+    <div id="formError" class="form-error" style="display:none"></div>
+
+    <form id="fitnessForm" class="fitness-form" onsubmit="return false;">
+
+      <!-- Step 1: 身体数据 -->
+      <div class="form-step active" data-step="0">
+        <div class="step-header">
+          <h3><span class="step-num">01</span> 身体数据</h3>
+          <p>告诉我你的基础信息，用于计算 BMI、基础代谢与每日消耗</p>
+        </div>
+        <div class="field-grid">
+          <div class="field">
+            <label for="height">身高 (cm)</label>
+            <div class="input-wrap">
+              <input type="number" id="height" aria-label="身高，单位厘米" placeholder="例如 175" min="100" max="250" step="0.1">
+              <span class="input-unit">cm</span>
+            </div>
+          </div>
+          <div class="field">
+            <label for="weight">体重 (kg)</label>
+            <div class="input-wrap">
+              <input type="number" id="weight" aria-label="体重，单位千克" placeholder="例如 70" min="30" max="250" step="0.1">
+              <span class="input-unit">kg</span>
+            </div>
+          </div>
+          <div class="field">
+            <label for="age">年龄</label>
+            <div class="input-wrap">
+              <input type="number" id="age" aria-label="年龄，单位岁" placeholder="例如 28" min="12" max="90">
+              <span class="input-unit">岁</span>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label>性别</label>
+          <div class="option-group" data-field="gender" role="radiogroup" aria-label="性别">
+            <label class="option-card">
+              <input type="radio" name="gender" value="male" aria-label="男">
+              <span class="option-icon"><i class="fas fa-mars"></i></span>
+              <span class="option-label">男</span>
+            </label>
+            <label class="option-card">
+              <input type="radio" name="gender" value="female" aria-label="女">
+              <span class="option-icon"><i class="fas fa-venus"></i></span>
+              <span class="option-label">女</span>
+            </label>
+          </div>
+        </div>
+        <!-- 体型方向：仅女生可见；静态存在以保证 option-group 事件委托已绑定 -->
+        <div class="field" id="bodyGoalField" hidden>
+          <label>训练方向 <span class="field-required">必填</span></label>
+          <div class="option-group" data-field="bodyGoal" role="radiogroup" aria-label="训练方向">
+            <label class="option-card">
+              <input type="radio" name="bodyGoal" value="cut" aria-label="减脂">
+              <span class="option-icon"><i class="fas fa-feather"></i></span>
+              <span class="option-label">减脂</span>
+              <span class="option-desc">降低体脂，保留肌肉</span>
+            </label>
+            <label class="option-card">
+              <input type="radio" name="bodyGoal" value="tone" aria-label="塑形">
+              <span class="option-icon"><i class="fas fa-seedling"></i></span>
+              <span class="option-label">塑形</span>
+              <span class="option-desc">体重基本不变，改善线条</span>
+            </label>
+            <label class="option-card">
+              <input type="radio" name="bodyGoal" value="build" aria-label="增肌">
+              <span class="option-icon"><i class="fas fa-dumbbell"></i></span>
+              <span class="option-label">增肌</span>
+              <span class="option-desc">增加肌肉量，练出曲线</span>
+            </label>
+          </div>
+          <p class="field-hint"><i class="fas fa-info-circle"></i> 方向决定训练侧重与饮食安排，可随时更换。</p>
+        </div>
+      </div>
+
+      <!-- Step 2: 训练设置 -->
+      <div class="form-step" data-step="1">
+        <div class="step-header">
+          <h3><span class="step-num">02</span> 训练设置</h3>
+          <p>你的训练经验、目标与可用场景，决定训练体系与动作选择</p>
+        </div>
+        <div class="field">
+          <label>训练经验</label>
+          <div class="option-group" data-field="experience" role="radiogroup" aria-label="训练经验">
+            <label class="option-card">
+              <input type="radio" name="experience" value="beginner" aria-label="零基础">
+              <span class="option-icon"><i class="fas fa-seedling"></i></span>
+              <span class="option-label">零基础</span>
+              <span class="option-desc">从未系统训练</span>
+            </label>
+            <label class="option-card">
+              <input type="radio" name="experience" value="novice" aria-label="入门 &lt;3月">
+              <span class="option-icon"><i class="fas fa-leaf"></i></span>
+              <span class="option-label">入门 &lt;3月</span>
+              <span class="option-desc">基础动作掌握中</span>
+            </label>
+            <label class="option-card">
+              <input type="radio" name="experience" value="intermediate" aria-label="中级 3月-2年">
+              <span class="option-icon"><i class="fas fa-tree"></i></span>
+              <span class="option-label">中级 3月-2年</span>
+              <span class="option-desc">动作稳定有基础</span>
+            </label>
+            <label class="option-card">
+              <input type="radio" name="experience" value="advanced" aria-label="高级 &gt;2年">
+              <span class="option-icon"><i class="fas fa-mountain"></i></span>
+              <span class="option-label">高级 &gt;2年</span>
+              <span class="option-desc">接近自然极限</span>
+            </label>
+          </div>
+        </div>
+        <div class="field" id="goalField">
+          <label>训练目标</label>
+          <div class="option-group" data-field="goal" role="radiogroup" aria-label="训练目标">
+            <label class="option-card">
+              <input type="radio" name="goal" value="muscle" aria-label="增肌">
+              <span class="option-icon"><i class="fas fa-dumbbell"></i></span>
+              <span class="option-label">增肌</span>
+            </label>
+            <label class="option-card">
+              <input type="radio" name="goal" value="fatloss" aria-label="减脂">
+              <span class="option-icon"><i class="fas fa-fire"></i></span>
+              <span class="option-label">减脂</span>
+            </label>
+            <label class="option-card">
+              <input type="radio" name="goal" value="strength" aria-label="力量">
+              <span class="option-icon"><i class="fas fa-weight-hanging"></i></span>
+              <span class="option-label">力量</span>
+            </label>
+            <label class="option-card">
+              <input type="radio" name="goal" value="conditioning" aria-label="体能">
+              <span class="option-icon"><i class="fas fa-running"></i></span>
+              <span class="option-label">体能</span>
+            </label>
+            <label class="option-card">
+              <input type="radio" name="goal" value="posture" aria-label="体态">
+              <span class="option-icon"><i class="fas fa-walking"></i></span>
+              <span class="option-label">体态</span>
+            </label>
+          </div>
+        </div>
+        <!-- 训练侧重：与体型方向正交（方向管结果，侧重管练法）—— 不重复问减脂 -->
+        <div class="field" id="trainingFocusField">
+          <label>训练侧重 <span class="field-required">必填</span></label>
+          <p class="field-hint"><i class="fas fa-info-circle"></i> 上一题决定怎么吃、练哪里；这一题决定怎么练。</p>
+          <div class="option-group" data-field="trainingFocus" role="radiogroup" aria-label="训练侧重">
+            <label class="option-card">
+              <input type="radio" name="trainingFocus" value="auto" aria-label="均衡发展">
+              <span class="option-icon"><i class="fas fa-balance-scale"></i></span>
+              <span class="option-label">均衡发展</span>
+              <span class="option-desc">跟随上面的体型方向</span>
+            </label>
+            <label class="option-card">
+              <input type="radio" name="trainingFocus" value="strength" aria-label="力量优先">
+              <span class="option-icon"><i class="fas fa-weight-hanging"></i></span>
+              <span class="option-label">力量优先</span>
+              <span class="option-desc">三大项为主，逐步加重</span>
+            </label>
+            <label class="option-card">
+              <input type="radio" name="trainingFocus" value="conditioning" aria-label="体能优先">
+              <span class="option-icon"><i class="fas fa-running"></i></span>
+              <span class="option-label">体能优先</span>
+              <span class="option-desc">循环训练 + HIIT</span>
+            </label>
+            <label class="option-card">
+              <input type="radio" name="trainingFocus" value="posture" aria-label="体态优先">
+              <span class="option-icon"><i class="fas fa-person-walking"></i></span>
+              <span class="option-label">体态优先</span>
+              <span class="option-desc">评估、激活、强化、拉伸</span>
+            </label>
+          </div>
+        </div>
+        <div class="field">
+          <label>每周可训练天数 <span class="field-required">必填</span></label>
+          <div class="option-group" data-field="daysPerWeek" role="radiogroup" aria-label="每周可训练天数">
+            <label class="option-card">
+              <input type="radio" name="daysPerWeek" value="2" aria-label="2 天">
+              <span class="option-label">2 天</span>
+              <span class="option-desc">时间很紧</span>
+            </label>
+            <label class="option-card">
+              <input type="radio" name="daysPerWeek" value="3" aria-label="3 天">
+              <span class="option-label">3 天</span>
+              <span class="option-desc">经典入门</span>
+            </label>
+            <label class="option-card">
+              <input type="radio" name="daysPerWeek" value="4" aria-label="4 天">
+              <span class="option-label">4 天</span>
+              <span class="option-desc">较充裕</span>
+            </label>
+            <label class="option-card">
+              <input type="radio" name="daysPerWeek" value="5" aria-label="5 天">
+              <span class="option-label">5 天</span>
+              <span class="option-desc">进阶</span>
+            </label>
+            <label class="option-card">
+              <input type="radio" name="daysPerWeek" value="6" aria-label="6 天">
+              <span class="option-label">6 天</span>
+              <span class="option-desc">高频</span>
+            </label>
+          </div>
+          <p class="field-hint"><i class="fas fa-info-circle"></i> 天数决定容量怎么分摊，不决定练多少。周容量由训练经验决定，依据 Schoenfeld 2018 元分析与 ACSM 2026 立场声明。</p>
+          <div class="adjust-hint" id="adjustHint" style="display:none"></div>
+        </div>
+        <div class="field">
+          <label>训练场景</label>
+          <div class="option-group" data-field="scenario" role="radiogroup" aria-label="训练场景">
+            <label class="option-card">
+              <input type="radio" name="scenario" value="home_none" aria-label="居家无器械">
+              <span class="option-icon"><i class="fas fa-home"></i></span>
+              <span class="option-label">居家无器械</span>
+            </label>
+            <label class="option-card">
+              <input type="radio" name="scenario" value="home_simple" aria-label="居家有器械">
+              <span class="option-icon"><i class="fas fa-couch"></i></span>
+              <span class="option-label">居家有器械</span>
+            </label>
+            <label class="option-card">
+              <input type="radio" name="scenario" value="gym" aria-label="健身房">
+              <span class="option-icon"><i class="fas fa-building"></i></span>
+              <span class="option-label">健身房</span>
+            </label>
+            <label class="option-card">
+              <input type="radio" name="scenario" value="mixed" aria-label="混合">
+              <span class="option-icon"><i class="fas fa-random"></i></span>
+              <span class="option-label">混合</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3: 生活方式 -->
+      <div class="form-step" data-step="2">
+        <div class="step-header">
+          <h3><span class="step-num">03</span> 生活方式</h3>
+          <p>你的日常活动水平与特殊情况，影响热量计算与训练适配</p>
+        </div>
+        <div class="field">
+          <label>日常活动水平</label>
+          <div class="option-group" data-field="activity" role="radiogroup" aria-label="活动水平">
+            <label class="option-card">
+              <input type="radio" name="activity" value="1.2" aria-label="久坐">
+              <span class="option-label">久坐</span>
+              <span class="option-desc">办公室工作，几乎不运动</span>
+            </label>
+            <label class="option-card">
+              <input type="radio" name="activity" value="1.375" aria-label="轻度活动">
+              <span class="option-label">轻度活动</span>
+              <span class="option-desc">每周1-3次轻度运动</span>
+            </label>
+            <label class="option-card">
+              <input type="radio" name="activity" value="1.55" aria-label="中度活动">
+              <span class="option-label">中度活动</span>
+              <span class="option-desc">每周3-5次中等强度运动</span>
+            </label>
+            <label class="option-card">
+              <input type="radio" name="activity" value="1.725" aria-label="高度活动">
+              <span class="option-label">高度活动</span>
+              <span class="option-desc">每周6-7次高强度运动</span>
+            </label>
+            <label class="option-card">
+              <input type="radio" name="activity" value="1.9" aria-label="极高活动">
+              <span class="option-label">极高活动</span>
+              <span class="option-desc">体力劳动 + 每日训练</span>
+            </label>
+          </div>
+        </div>
+        <div class="field">
+          <label>特殊情况（选填）</label>
+          <div id="specialConditions" class="option-group small-grid"></div>
+          <p class="field-hint"><i class="fas fa-info-circle"></i> 如有伤病史、慢性疾病或术后恢复，请务必先咨询专业医师</p>
+        </div>
+      </div>
+
+      <!-- Step 4: 生成 -->
+      <div class="form-step" data-step="3">
+        <div class="step-header">
+          <h3><span class="step-num">04</span> 确认并生成</h3>
+          <p>确认信息无误后，生成你的个性化健身方案</p>
+        </div>
+        <div class="review-box" id="reviewBox">
+          <p class="review-placeholder">点击上方步骤回顾你的输入信息</p>
+        </div>
+        <div class="generate-cta">
+          <div class="cta-icon"><i class="fas fa-magic-wand-sparkles"></i></div>
+          <div>
+            <h4>准备好了吗？</h4>
+            <p>将生成：身体评估 · 每周训练计划 · 动作进阶标准 · 饮食方案 · 恢复建议</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 导航按钮 -->
+      <div class="form-nav">
+        <button type="button" id="btnPrev" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> 上一步</button>
+        <button type="button" id="btnNext" class="btn btn-primary">下一步 <i class="fas fa-arrow-right"></i></button>
+      </div>
+    </form>
+  </div>
+
+  <!-- ===================== 结果视图 ===================== -->
+  <div id="resultView" style="display:none">
+    <div class="result-header">
+      <div class="result-header-inner">
+        <div class="result-title-wrap">
+          <h2><i class="fas fa-file-medical"></i> 你的个性化健身方案</h2>
+          <p>基于你的身体数据与训练目标生成 · 循证科学体系</p>
+        </div>
+        <div class="result-actions">
+          <button class="btn btn-secondary" id="btnEdit"><i class="fas fa-pen"></i> 修改信息</button>
+          <button class="btn btn-save" id="btnSave"><i class="fas fa-cloud-arrow-up"></i> 保存方案</button>
+          <button class="btn btn-primary" id="btnRegenerate"><i class="fas fa-sync-alt"></i> 重新生成</button>
+        </div>
+      </div>
+      <div class="share-box">
+        <input type="text" id="shareText" aria-label="分享文本，可复制" readonly>
+        <button class="btn btn-share" onclick="copyShareText()"><i class="fas fa-copy"></i> 复制</button>
+      </div>
+    </div>
+
+    <!-- 双视图切换：执行态（默认）/ 规划态 -->
+    <div class="view-tabs" id="viewTabs">
+      <button type="button" class="view-tab active" data-view="today"><i class="fas fa-bolt"></i> 今日训练</button>
+      <button type="button" class="view-tab" data-view="ability"><i class="fas fa-chart-simple"></i> 能力地图</button>
+      <button type="button" class="view-tab" data-view="plan"><i class="fas fa-file-lines"></i> 完整方案</button>
+      <button type="button" class="view-tab-new" id="btnNewPlan"><i class="fas fa-plus"></i> 重新制定方案</button>
+    </div>
+
+    <!-- 执行态：今日训练大卡 -->
+    <div id="wkTodayView" class="today-view"><span id="secToday" aria-hidden="true"></span></div>
+
+    <!-- 能力态：六边形面板 -->
+    <div id="abilityPanel" class="ab-panel"></div>
+
+    <!-- 我的方案（云端历史，归入规划态） -->
+    <div id="planOnlyBlocks">
+    <section class="history-panel" id="historyPanel">
+      <div class="history-header">
+        <h3><i class="fas fa-clock-rotate-left"></i> 我的方案</h3>
+        <span class="history-count" id="historyCount">加载中…</span>
+      </div>
+      <div class="history-list" id="historyList"></div>
+    </section>
+    </div>
+    <div id="resultBody"></div>
+    <div class="result-footer">
+      <p><i class="fas fa-heart"></i> 坚持是唯一的捷径。每周记录训练数据，用渐进超负荷推动进步。</p>
+      <button class="btn btn-primary" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fas fa-arrow-up"></i> 回到顶部</button>
+    </div>
+  </div>
+
+  <!-- 关于温可乐：能力与方法论（默认收起，不干扰主流程） -->
+  <details class="about-drawer" id="aboutDrawer">
+    <summary class="about-toggle">
+      <span class="about-toggle-icon"><i class="fas fa-circle-info"></i></span>
+      <span class="about-toggle-text">
+        <strong>了解温可乐的方法论</strong>
+        <small>循证体系 · 7 步生成逻辑 · 为什么这样设计</small>
+      </span>
+      <span class="about-toggle-chevron"><i class="fas fa-chevron-down"></i></span>
+    </summary>
+    <div class="about-content">
+  <section id="features" class="info-section">
+    <h2>为什么选择 温可乐健身</h2>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <i class="fas fa-dna"></i>
+        <h3>循证 · 分级透明</h3>
+        <p>基于 Schoenfeld 2017 元分析、ACSM 2026 指南、ISSN 2017 立场声明等构建。每个数值标注 A-D 证据等级，并明确列出无直接研究支持的经验约定。</p>
+      </div>
+      <div class="feature-card">
+        <i class="fas fa-person-running"></i>
+        <h3>全阶段覆盖</h3>
+        <p>从零基础到高级训练者，从增肌减脂到力量体能体态，每个阶段都有对应的分化模式与进阶路径。</p>
+      </div>
+      <div class="feature-card">
+        <i class="fas fa-house-chimney"></i>
+        <h3>双场景适配</h3>
+        <p>居家无器械与健身房动作一一对应，提供完整的动作替换速查表，任何环境都能练。</p>
+      </div>
+      <div class="feature-card">
+        <i class="fas fa-users"></i>
+        <h3>特殊人群关怀</h3>
+        <p>中老年、久坐办公族、产后恢复、青少年、肥胖人群，均有专属适配方案与安全红线。</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="method" class="info-section">
+    <h2>方案生成方法论</h2>
+    <div class="method-steps">
+      <div class="method-step">
+        <div class="method-num">1</div>
+        <div class="method-content"><h4>身体评估</h4><p>计算 BMI、BMR（Mifflin-St Jeor）、TDEE，判断体重与目标合理性</p></div>
+      </div>
+      <div class="method-step">
+        <div class="method-num">2</div>
+        <div class="method-content"><h4>体系匹配</h4><p>根据目标 + 经验 + 时间选择分化模式（全身/上下肢/推拉腿/5x5/5-3-1）</p></div>
+      </div>
+      <div class="method-step">
+        <div class="method-num">3</div>
+        <div class="method-content"><h4>动作选择</h4><p>每个动作标注目标肌群、要点、常见错误、组次与进阶判定标准</p></div>
+      </div>
+      <div class="method-step">
+        <div class="method-num">4</div>
+        <div class="method-content"><h4>营养闭环</h4><p>目标热量 + 宏量营养素 + 三餐框架 + 训练前后营养 + 补水</p></div>
+      </div>
+      <div class="method-step">
+        <div class="method-num">5</div>
+        <div class="method-content"><h4>恢复设计</h4><p>睡眠、主动恢复、Deload 减载周、过度训练信号识别</p></div>
+      </div>
+    </div>
+  </section>
+    </div>
+  </details>
+
+  <!-- 页脚 -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <i class="fas fa-dumbbell"></i> 温可乐健身
+      </div>
+      <div class="footer-disclaimer">
+        <strong>免责声明：</strong>本工具生成的内容基于公开科学文献，仅供参考，不构成医疗建议。如有伤病、慢性疾病或术后恢复情况，请咨询专业医师或物理治疗师。
+      </div>
+      <div class="footer-copy">© 2026 温可乐健身 WenKele Fitness · 循证训练，科学健身</div>
+    </div>
+  </footer>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="data.js"></script>
+<script src="db.js"></script>
+<script src="tracker.js"></script>
+<script src="tracker-ui.js"></script>
+<script src="recommendation-ui.js"></script>
+<script src="today-view.js"></script>
+<script src="ability.js"></script>
+<script src="ability-ui.js"></script>
+<script src="ability-report.js"></script>
+<script src="body-goal.js"></script>
+<script src="training-focus.js"></script>
+<script src="audit-followup.js"></script>
+<script src="ai-runtime.js"></script>
+<script src="ai-grounding.js"></script>
+<script src="ai-templates.js"></script>
+<script src="ai-feedback.js"></script>
+<script src="ai-coach.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
